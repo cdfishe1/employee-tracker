@@ -2,6 +2,7 @@ const mysql = require('mysql');
 const inquirer = require('inquirer');
 // const addData = require('./addFunctions/addData');
 const cTable = require('console.table');
+const { Table } = require('console-table-printer');
 
 const connection = mysql.createConnection({
   host: 'localhost',
@@ -162,22 +163,18 @@ const allEmployees = () => {
   console.log('Selecting all employees...\n');
   connection.query('SELECT * FROM employee', (err, res) => {
     if (err) throw err;
+    console.log(res);
     res.forEach(({  employee_id, first_name, last_name, }) => {
-      const table = cTable.getTable([
-        {
-          EmployeeID: `${employee_id}`,
-          FirstName: `${first_name}`,
-          LastName: `${last_name}`,
-        },
-      ]);
-      console.log(table);
+      const p = new Table();
+      p.addRow({ employee_id: `${employee_id}`, first_name: `${first_name}`, last_name: `${last_name}` });
+      p.printTable();
       // console.log(
       //   `Employee ID: ${employee_id} || Name: ${first_name} ${last_name}`
       // );
     });
     connection.end();
   });
-}
+};
 
 
  
