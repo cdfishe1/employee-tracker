@@ -1,9 +1,9 @@
 const mysql = require('mysql');
 const inquirer = require('inquirer');
 // const addData = require('./addFunctions/addData');
-const cTable = require('console.table');
 const { Table } = require('console-table-printer');
 
+//Establish connection to employee database
 const connection = mysql.createConnection({
   host: 'localhost',
 
@@ -163,22 +163,18 @@ const allEmployees = () => {
   console.log('Selecting all employees...\n');
   connection.query('SELECT * FROM employee', (err, res) => {
     if (err) throw err;
-    console.log(res);
+    const p = new Table();
     res.forEach(({  employee_id, first_name, last_name, }) => {
-      const p = new Table();
       p.addRow({ employee_id: `${employee_id}`, first_name: `${first_name}`, last_name: `${last_name}` });
-      p.printTable();
-      // console.log(
-      //   `Employee ID: ${employee_id} || Name: ${first_name} ${last_name}`
-      // );
+    
     });
+    p.printTable();
     connection.end();
   });
 };
 
-
  
-
+//Initiate connection to employee database
 connection.connect((err) => {
     if (err) throw err;
     console.log(`connected as id ${connection.threadId}\n`);
