@@ -23,30 +23,26 @@ const start = () => {
         type: 'list',
         message: 'What would you like to do?',
         choices: [
-          'Add department',
-          'Add role',
-          'Add employee',
-          'View all employees',
-          'View all employees by department',
-          'View all employees by role',
-          'Update employee role',
+          'Add department, role, or employee',
+          'View employees',
+          'Update employees',
           'exit',
         ],
       })
       .then((answer) => {
         switch (answer.action) {
-          case 'Add department':
-            //addDept();
+          case 'Add department, role, or employee':
+            //addData();
             console.log(answer.action);
             break;
   
-          case 'Add role':
-            // addRole();
+          case 'View employees':
+            // viewEmployees();
             console.log(answer.action);
             break;
   
-          case 'Add Employee':
-            // addEmployee();
+          case 'Update employees':
+            // updateEmployee();
             console.log(answer.action);
             break;
   
@@ -54,21 +50,6 @@ const start = () => {
             // viewAllEmployees();
             console.log(answer.action);
             break;
-
-          case 'View all employees by department':
-            // viewAllEmployeesDept();
-            console.log(answer.action);
-            break;
-
-          case 'View all employees by role':
-            // viewAllEmployeesRole();
-            console.log(answer.action);
-            break;
-
-          case 'Update employee role':
-             // viewAllEmployeesRole();
-            console.log(answer.action);
-             break;
   
           case 'Exit':
             connection.end();
