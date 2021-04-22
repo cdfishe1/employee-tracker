@@ -1,6 +1,6 @@
 const mysql = require('mysql');
 const inquirer = require('inquirer');
-// const addData = require('./addFunctions/addData');
+const queries = require('./sqlLib/queries');
 const { Table } = require('console-table-printer');
 
 //Establish connection to employee database
@@ -73,6 +73,18 @@ const mainMenu = () => {
         
 };
 
+const viewDeptsForRole = () => {
+  connection.query('SELECT * FROM department', (err, res) => {
+      if (err) throw err;
+      let deptArray = [];
+      res.forEach(({dept_name}) => {
+        deptArray.push(dept_name);
+      })
+      addRole(deptArray);  
+    });
+    
+};
+
 //Submenu to ask to add data by department, role, or employee
 const addData = () => {
   inquirer
@@ -95,7 +107,7 @@ const addData = () => {
           break;
 
         case 'Role':
-          // addRole();
+          viewDeptsForRole();
           break;
 
         case 'Employee':
@@ -136,6 +148,44 @@ const addDepartment = () => {
         console.log(`You have added the ${data.dept} department to the database.`)
         mainMenu();
        }) 
+    });
+};
+
+//Add a role to the database
+const addRole = (depts) => {
+  inquirer
+      .prompt([
+          {
+          type: 'input',
+          name: 'title',
+          message: "Please input the title of this role:",
+          // validate: validateString,
+          },
+
+          {
+            type: 'input',
+            name: 'salary',
+            message: "Please input the salary of this role:",
+            // validate: validateString,
+          },
+
+          {
+            type: 'list',
+            name: 'dept',
+            message: "Please add a department for this role:",
+            choices: [...depts],
+            // validate: validateString,
+          },
+          
+      ])
+      .then((data) => {
+        console.log(data);
+      //  const query = "INSERT INTO department SET ?";
+      //  connection.query(query, {dept_name: `${data.dept}`}, (err, res) => {
+      //   if(err) throw(err);
+      //   console.log(`You have added the ${data.dept} department to the database.`)
+      //   mainMenu();
+      //  }) 
     });
 };
 
@@ -197,5 +247,18 @@ const allEmployees = () => {
     connection.end();
   });
 };
+
+// //View departments
+// const viewDepts = () => {
+//   connection.query('SELECT * FROM department', (err, res) => {
+//       if (err) throw err;
+//       let deptArray = [];
+//       res.forEach(({dept_name}) => {
+//         deptArray.push(dept_name);
+//       })  
+//     });
+// };
+
+
 
  
