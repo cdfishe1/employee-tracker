@@ -18,6 +18,13 @@ const connection = mysql.createConnection({
   database: 'employee_trackerdb',
 });
 
+//Initiate connection to employee database
+connection.connect((err) => {
+  if (err) throw err;
+  console.log(`connected as id ${connection.threadId}\n`);
+  mainMenu();
+});
+
 //Begin main menu function
 const mainMenu = () => {
     inquirer
@@ -112,6 +119,23 @@ const addData = () => {
 
 //Add a department to the database
 const addDepartment = () => {
+  inquirer
+      .prompt([
+          {
+          type: 'input',
+          name: 'dept',
+          message: "Please input the department.",
+          // validate: validateString,
+          },
+          
+      ])
+      .then((data) => {
+       const query = "INSERT INTO department SET ?";
+       connection.query(query, {dept_name: `${data.dept}`}, (err, res) => {
+        if(err) throw(err);
+        console.log(res);
+       }) 
+    });
 };
 
 //Submenu to view employee data
@@ -174,9 +198,3 @@ const allEmployees = () => {
 };
 
  
-//Initiate connection to employee database
-connection.connect((err) => {
-    if (err) throw err;
-    console.log(`connected as id ${connection.threadId}\n`);
-    mainMenu();
-  });
