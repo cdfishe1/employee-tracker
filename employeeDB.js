@@ -36,7 +36,7 @@ const mainMenu = () => {
           'Add department, role, or employee',
           'View employees',
           'Update employees',
-          'exit',
+          'Exit',
         ],
       })
       .then((answer) => {
@@ -124,7 +124,7 @@ const addDepartment = () => {
           {
           type: 'input',
           name: 'dept',
-          message: "Please input the department.",
+          message: "Please input the department:",
           // validate: validateString,
           },
           
@@ -133,7 +133,8 @@ const addDepartment = () => {
        const query = "INSERT INTO department SET ?";
        connection.query(query, {dept_name: `${data.dept}`}, (err, res) => {
         if(err) throw(err);
-        console.log(res);
+        console.log(`You have added the ${data.dept} department to the database.`)
+        mainMenu();
        }) 
     });
 };
