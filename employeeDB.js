@@ -248,17 +248,28 @@ const viewData = () => {
 
 //View all employees
 const allEmployees = () => {
-  console.log('Selecting all employees...\n');
-  connection.query('SELECT * FROM employee', (err, res) => {
-    if (err) throw err;
+  const query = "SELECT * FROM employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON role.dept_id = department.id";
+  connection.query(query, (err, res) => {
+    if (err) throw(err);
     const p = new Table();
-    res.forEach(({  employee_id, first_name, last_name, }) => {
-      p.addRow({ employee_id: `${employee_id}`, first_name: `${first_name}`, last_name: `${last_name}` });
-    
-    });
-    p.printTable();
-    mainMenu();
+    res.forEach(({  employee_id, first_name, last_name, title, salary, dept_name}) => {
+          p.addRow({ employee_id: `${employee_id}`, first_name: `${first_name}`, last_name: `${last_name}`, title: `${title}`, salary: `${salary}`, department: `${dept_name}` });
+        
+        });
+        p.printTable();
+        mainMenu();
   });
+  
+  // connection.query('SELECT * FROM employee', (err, res) => {
+  //   if (err) throw err;
+  //   const p = new Table();
+  //   res.forEach(({  employee_id, first_name, last_name, }) => {
+  //     p.addRow({ employee_id: `${employee_id}`, first_name: `${first_name}`, last_name: `${last_name}` });
+    
+  //   });
+  //   p.printTable();
+  //   mainMenu();
+  // });
 };
 
 //View departments
