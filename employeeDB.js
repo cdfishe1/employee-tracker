@@ -75,17 +75,6 @@ const mainMenu = () => {
 
 //--------------------------------//
 
-const queryDeptsForRole = () => {
-  connection.query('SELECT * FROM department', (err, res) => {
-      if (err) throw err;
-      let deptArray = [];
-      res.forEach(({id, dept_name}) => {
-        deptArray.push(`${id} ${dept_name}`);
-      })
-      addRole(deptArray);  
-    });
-};
-
 //Submenu to ask to add data by department, role, or employee
 const addData = () => {
   inquirer
@@ -108,7 +97,7 @@ const addData = () => {
           break;
 
         case 'Role':
-          queryDeptsForRole();
+          queryDeptsForAddRole();
           break;
 
         case 'Employee':
@@ -149,6 +138,18 @@ const addDepartment = () => {
         console.log(`You have added the ${data.dept} department to the database.`)
         mainMenu();
        }) 
+    });
+};
+
+//Queries the role table for the add role function
+const queryDeptsForAddRole = () => {
+  connection.query('SELECT * FROM department', (err, res) => {
+      if (err) throw err;
+      let deptArray = [];
+      res.forEach(({id, dept_name}) => {
+        deptArray.push(`${id} ${dept_name}`);
+      })
+      addRole(deptArray);  
     });
 };
 
@@ -196,7 +197,7 @@ const addRole = (depts) => {
 };
 
 const addEmployee = () => {
-  
+
 }
 
 //----------------------------//
