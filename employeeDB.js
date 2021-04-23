@@ -34,7 +34,7 @@ const mainMenu = () => {
         message: 'What would you like to do?',
         choices: [
           'Add department, role, or employee',
-          'View employees',
+          'View department, role, or employee',
           'Update employees',
           'Exit',
         ],
@@ -45,7 +45,7 @@ const mainMenu = () => {
             addData();
             break;
   
-          case 'View employees':
+          case 'View department, role, or employee':
             viewData();
             console.log(answer.action);
             break;
@@ -73,12 +73,14 @@ const mainMenu = () => {
         
 };
 
+//--------------------------------//
+
 const viewDeptsForRole = () => {
   connection.query('SELECT * FROM department', (err, res) => {
       if (err) throw err;
       let deptArray = [];
-      res.forEach(({dept_name}) => {
-        deptArray.push(dept_name);
+      res.forEach(({id, dept_name}) => {
+        deptArray.push(`${id} ${dept_name}`);
       })
       addRole(deptArray);  
     });
@@ -179,15 +181,17 @@ const addRole = (depts) => {
           
       ])
       .then((data) => {
-        console.log(data);
-      //  const query = "INSERT INTO department SET ?";
-      //  connection.query(query, {dept_name: `${data.dept}`}, (err, res) => {
+      console.log(data.dept);
+      //  const query = "INSERT INTO role SET ?";
+      //  connection.query(query, {title: `${data.title}`, salary: `${data.salary}`, }, (err, res) => {
       //   if(err) throw(err);
       //   console.log(`You have added the ${data.dept} department to the database.`)
       //   mainMenu();
       //  }) 
     });
 };
+
+//----------------------------//
 
 //Submenu to view employee data
 const viewData = () => {
@@ -198,8 +202,8 @@ const viewData = () => {
       message: 'What would you like to view?',
       choices: [
         'All Employees',
-        'Employees by Role',
-        'Employees by Department',
+        'Roles',
+        'Departments',
         'Return to main menu',
         'Exit',
       ],
@@ -210,12 +214,12 @@ const viewData = () => {
           allEmployees();
           break;
 
-        case 'Employees by Role':
-          // viewByRole();
+        case 'Roles':
+          viewRoles();
           break;
 
-        case 'Employees by Department':
-          // viewByDept();
+        case 'Departments':
+          viewDepts();
           break;
 
         case 'Return to main menu':
@@ -244,20 +248,35 @@ const allEmployees = () => {
     
     });
     p.printTable();
-    connection.end();
+    mainMenu();
   });
 };
 
-// //View departments
-// const viewDepts = () => {
-//   connection.query('SELECT * FROM department', (err, res) => {
-//       if (err) throw err;
-//       let deptArray = [];
-//       res.forEach(({dept_name}) => {
-//         deptArray.push(dept_name);
-//       })  
-//     });
-// };
+//View departments
+const viewDepts = () => {
+  connection.query('SELECT * FROM department', (err, res) => {
+      if (err) throw err;
+      const p = new Table();
+      res.forEach(({dept_name}) => {
+        p.addRow({Department: `${dept_name}`});
+      });
+      p.printTable();
+        mainMenu();  
+    });
+};
+
+//View Roles
+const viewRoles = () => {
+  connection.query('SELECT * FROM role', (err, res) => {
+    if (err) throw err;
+    const p = new Table();
+    res.forEach(({title, salary}) => {
+      p.addRow({Title: `${title}`, Salary: `${salary}`});
+    });
+    p.printTable();
+      mainMenu();  
+  });
+}
 
 
 
