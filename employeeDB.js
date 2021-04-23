@@ -253,23 +253,13 @@ const allEmployees = () => {
     if (err) throw(err);
     const p = new Table();
     res.forEach(({  employee_id, first_name, last_name, title, salary, dept_name}) => {
-          p.addRow({ employee_id: `${employee_id}`, first_name: `${first_name}`, last_name: `${last_name}`, title: `${title}`, salary: `${salary}`, department: `${dept_name}` });
+          p.addRow({ Employee_ID: `${employee_id}`, First_Name: `${first_name}`, Last_Name: `${last_name}`, Title: `${title}`, Salary: `${salary}`, Department: `${dept_name}` });
         
         });
         p.printTable();
         mainMenu();
   });
   
-  // connection.query('SELECT * FROM employee', (err, res) => {
-  //   if (err) throw err;
-  //   const p = new Table();
-  //   res.forEach(({  employee_id, first_name, last_name, }) => {
-  //     p.addRow({ employee_id: `${employee_id}`, first_name: `${first_name}`, last_name: `${last_name}` });
-    
-  //   });
-  //   p.printTable();
-  //   mainMenu();
-  // });
 };
 
 //View departments
