@@ -75,7 +75,7 @@ const mainMenu = () => {
 
 //--------------------------------//
 
-const viewDeptsForRole = () => {
+const queryDeptsForRole = () => {
   connection.query('SELECT * FROM department', (err, res) => {
       if (err) throw err;
       let deptArray = [];
@@ -84,7 +84,6 @@ const viewDeptsForRole = () => {
       })
       addRole(deptArray);  
     });
-    
 };
 
 //Submenu to ask to add data by department, role, or employee
@@ -109,7 +108,7 @@ const addData = () => {
           break;
 
         case 'Role':
-          viewDeptsForRole();
+          queryDeptsForRole();
           break;
 
         case 'Employee':
@@ -195,6 +194,10 @@ const addRole = (depts) => {
        }) 
     });
 };
+
+const addEmployee = () => {
+  
+}
 
 //----------------------------//
 
