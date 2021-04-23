@@ -181,13 +181,18 @@ const addRole = (depts) => {
           
       ])
       .then((data) => {
-      console.log(data.dept);
-      //  const query = "INSERT INTO role SET ?";
-      //  connection.query(query, {title: `${data.title}`, salary: `${data.salary}`, }, (err, res) => {
-      //   if(err) throw(err);
-      //   console.log(`You have added the ${data.dept} department to the database.`)
-      //   mainMenu();
-      //  }) 
+        const deptKeySplit = data.dept.split(' ');
+        const deptKey = deptKeySplit[0];
+        const deptName = deptKeySplit[1];
+        const query = "INSERT INTO role SET ?";
+        connection.query(query, {title: `${data.title}`, salary: `${data.salary}`, dept_id: `${deptKey}`}, (err, res) => {
+          if(err) throw(err);
+          console.log(res);
+        const p = new Table();
+        p.addRow({ Title: `${data.title}`, Salary: `${data.salary}`, Department: `${deptName}` });
+        p.printTable();
+        mainMenu();
+       }) 
     });
 };
 
