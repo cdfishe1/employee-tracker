@@ -297,8 +297,8 @@ const beginRoleUpdate = () => {
   connection.query('SELECT * FROM employee', (err, res) => {
     if (err) throw err;
     let nameArray = [];
-    res.forEach(({employee_id, first_name, last_name}) => {
-      nameArray.push(`${employee_id} ${first_name} ${last_name}`);
+    res.forEach(({employee_id, first_name, last_name, role_id}) => {
+      nameArray.push(`${first_name} ${last_name} ${employee_id} ${role_id}`);
     })
     queryRoles(nameArray);  
   });
@@ -317,26 +317,40 @@ const queryRoles = (names) => {
 };
 
 const updateEmployeeRole = (names, roles) => {
-  console.log(names);
-  console.log(roles);
-  // inquirer
-  //     .prompt([
-  //         {
-  //         type: 'input',
-  //         name: 'dept',
-  //         message: "Please input the department:",
-  //         // validate: validateString,
-  //         },
+  
+  inquirer
+      .prompt([
+          {
+          type: 'list',
+          name: 'name',
+          message: "Please select a name:",
+          choices: [...names],
+          // validate: validateString,
+          },
+
+          {
+            type: 'list',
+            name: 'role',
+            message: "Please select a role:",
+            choices: [...roles],
+            // validate: validateString,
+            },
           
-  //     ])
-  //     .then((data) => {
-  //      const query = "INSERT INTO department SET ?";
-  //      connection.query(query, {dept_name: `${data.dept}`}, (err, res) => {
-  //       if(err) throw(err);
-  //       console.log(`You have added the ${data.dept} department to the database.`)
-  //       mainMenu();
-  //      }) 
-  //   });
+      ])
+      .then((data) => {
+        console.log(data)
+        const nameSplit = data.name.split(' ');
+        const roleSplit = data.role.split(' ');;
+        const employeeName = `${nameSplit[0]} ${nameSplit[1]}`
+        const employeeKey = nameSplit[2];
+        const roleKey = roleSplit[0];
+       const query = "UPDATE employee SET ? WHERE ?";
+       connection.query(query, [{role_id: `${roleKey}`}, {employee_id: `${employeeKey}`}], (err, res) => {
+        if(err) throw(err);
+        allEmployees();
+        mainMenu();
+       }) 
+    });
 
 };
 
