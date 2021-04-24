@@ -1,6 +1,5 @@
 const mysql = require('mysql');
 const inquirer = require('inquirer');
-const queries = require('./sqlLib/queries');
 const { Table } = require('console-table-printer');
 
 //Establish connection to employee database
@@ -35,7 +34,7 @@ const mainMenu = () => {
         choices: [
           'Add department, role, or employee',
           'View department, role, or employee',
-          'Update employees',
+          'Update employee role',
           'Exit',
         ],
       })
@@ -50,8 +49,8 @@ const mainMenu = () => {
             console.log(answer.action);
             break;
   
-          case 'Update employees':
-            // updateEmployee();
+          case 'Update employee role':
+            beginRoleUpdate();
             console.log(answer.action);
             break;
   
@@ -141,7 +140,7 @@ const addDepartment = () => {
     });
 };
 
-//Queries the role table for the add role function
+//Queries the department table for the add role function
 const queryDeptsForAddRole = () => {
   connection.query('SELECT * FROM department', (err, res) => {
       if (err) throw err;
@@ -154,7 +153,8 @@ const queryDeptsForAddRole = () => {
 };
 
 //Add a role to the database
-const addRole = (depts) => {
+const addRole = (dept) => {
+  
   inquirer
       .prompt([
           {
@@ -175,7 +175,7 @@ const addRole = (depts) => {
             type: 'list',
             name: 'dept',
             message: "Please add a department for this role:",
-            choices: [...depts],
+            choices: [...dept],
             // validate: validateString,
           },
           
@@ -187,7 +187,6 @@ const addRole = (depts) => {
         const query = "INSERT INTO role SET ?";
         connection.query(query, {title: `${data.title}`, salary: `${data.salary}`, dept_id: `${deptKey}`}, (err, res) => {
           if(err) throw(err);
-          console.log(res);
         const p = new Table();
         p.addRow({ Title: `${data.title}`, Salary: `${data.salary}`, Department: `${deptName}` });
         p.printTable();
@@ -195,6 +194,8 @@ const addRole = (depts) => {
        }) 
     });
 };
+
+
 
 const addEmployee = () => {
 
@@ -287,6 +288,57 @@ const viewRoles = () => {
       mainMenu();  
   });
 }
+
+//------------------------------//
+
+//Update employee role
+const beginRoleUpdate = () => {
+  
+  connection.query('SELECT * FROM employee', (err, res) => {
+    if (err) throw err;
+    let nameArray = [];
+    res.forEach(({employee_id, first_name, last_name}) => {
+      nameArray.push(`${employee_id} ${first_name} ${last_name}`);
+    })
+    queryRoles(nameArray);  
+  });
+  
+};
+
+const queryRoles = (names) => {
+  connection.query('SELECT * FROM role', (err, res) => {
+    if (err) throw err;
+    let roleArray = [];
+    res.forEach(({id, title}) => {
+      roleArray.push(`${id} ${title}`);
+    })
+    updateEmployeeRole(names, roleArray);  
+  });
+};
+
+const updateEmployeeRole = (names, roles) => {
+  console.log(names);
+  console.log(roles);
+  // inquirer
+  //     .prompt([
+  //         {
+  //         type: 'input',
+  //         name: 'dept',
+  //         message: "Please input the department:",
+  //         // validate: validateString,
+  //         },
+          
+  //     ])
+  //     .then((data) => {
+  //      const query = "INSERT INTO department SET ?";
+  //      connection.query(query, {dept_name: `${data.dept}`}, (err, res) => {
+  //       if(err) throw(err);
+  //       console.log(`You have added the ${data.dept} department to the database.`)
+  //       mainMenu();
+  //      }) 
+  //   });
+
+};
 
 
 
