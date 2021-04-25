@@ -11,7 +11,9 @@ This node.js app allows a user to read, create, and update employee information 
 * [YouTube Demonstration](#youtube-demonstration)
 * [Scope of Project](#scope-of-project)
 * [Installation](#installation)
+* [Code Snippet](#code-snippet)
 * [Project Review](#project-review)
+* [Credits](#credits)
 * [License](#license)
 
 ## Team Generator
@@ -38,11 +40,25 @@ This node.js app allows a user to read, create, and update employee information 
 * Upon cloning open node.js and enter npm i in order to install all the dependenicies.
 * After installation you begin the app with npm start.
 
+## Code Snippet
+I modified the following code from [Codota](https://www.codota.com/code/javascript/functions/figlet/textSync) in order to execute the graphic spash heading:
+
+```
+const welcomeLogo = (welcomeString) => {
+ clear();
+ console.log(chalk.red(figlet.textSync('\nthe Forge', { font: 'ANSI Shadow', horizontalLayout: 'full' })));
+ console.log(`Welcome to the Forge! ${welcomeString} 🔥 🔥 🔥\n`);
+}
+```
+
 ## Project Review
 * The most difficult part of this project was translating mysql queries into node versions of these queries that the mysql database could understand. The documentation for implementing node versions of mysql queries is much less robust than running mysql on a platform like mysql workbench. The code for this project is really long and repetitious, but I couldn't figure out how to parse the query functions into the main mysql functions that implemented the required functionality without a lot of auxillary functions feeding into these main functions.
 * Related to the "spaghetti" nature of this code is the sometimes ugly prompts for user data, especially when adding an employee. I needed to gather various primary and foreign keys to execute the queries properly, but I had difficulty knowing how to not show this information in the inquirer mechanism.
 * For future updates I would plan on modulizing these functions such that the code is cleaner and easier to understand.
 * There is an intermittant error thrown when exiting the program that is due, I believe, to an open query.connection somewhere while exiting the program. I haven't been able to identify how to close this.
+
+## Credits
+[Codota](https://www.codota.com/code/javascript/functions/figlet/textSync)
 
 
 ## License

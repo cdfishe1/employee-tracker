@@ -6,10 +6,8 @@ const figlet = require('figlet');
 const chalk = require('chalk');
 
 const welcomeLogo = () => {
-  console.log(chalk.green(figlet.textSync('\nEmployee Managment System', { font: 'ANSI Shadow', horizontalLayout: 'full' })));
-  // console.log(`Employee Management System\n`);
+  console.log(chalk.green(figlet.textSync('\nEmployee \nManagement \nSystem', { font: 'standard', horizontalLayout: 'default', width: 80 })));
 };
-
 welcomeLogo();
 
 //Establish connection to employee database
@@ -157,7 +155,7 @@ const addDepartment = () => {
 
 //Query the department table for the add role function
 const queryDeptsForAddRole = () => {
-  connection.query('SELECT * FROM department', (err, res) => {
+  connection.query('SELECT * FROM department ORDER BY dept_name', (err, res) => {
       if (err) throw err;
       let deptArray = [];
       res.forEach(({id, dept_name}) => {
@@ -211,7 +209,7 @@ const addRole = (dept) => {
 
 //Initiate addEmployee by first query of roles
 const beginAddEmployee = () => {
-  connection.query('SELECT * FROM role', (err, res) => {
+  connection.query('SELECT * FROM role ORDER BY title', (err, res) => {
       if (err) throw err;
       let roleArray = [];
       res.forEach(({id, title}) => {
@@ -223,7 +221,7 @@ const beginAddEmployee = () => {
 
 //Query managers for the addEmployee function
 const queryManagersForAddEmployee = roles => {
-  connection.query('SELECT * FROM employee WHERE manager_id IS NULL', (err, res) => {
+  connection.query('SELECT * FROM employee WHERE manager_id IS NULL ORDER BY last_name', (err, res) => {
     if (err) throw err;
     let managerArray = [];
     res.forEach(({employee_id, first_name, last_name}) => {
@@ -347,7 +345,7 @@ const viewData = () => {
 
 //View all employees
 const allEmployees = () => {
-  const query = "SELECT * FROM employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON role.dept_id = department.id";
+  const query = "SELECT * FROM employee LEFT JOIN role ON employee.role_id = role.id LEFT JOIN department ON role.dept_id = department.id ORDER BY employee.last_name";
   connection.query(query, (err, res) => {
     if (err) throw(err);
     const p = new Table();
@@ -363,7 +361,7 @@ const allEmployees = () => {
 
 //View departments
 const viewDepts = () => {
-  connection.query('SELECT * FROM department', (err, res) => {
+  connection.query('SELECT * FROM department ORDER BY dept_name', (err, res) => {
       if (err) throw err;
       const p = new Table();
       res.forEach(({dept_name}) => {
@@ -376,7 +374,7 @@ const viewDepts = () => {
 
 //View Roles
 const viewRoles = () => {
-  connection.query('SELECT * FROM role', (err, res) => {
+  connection.query('SELECT * FROM role ORDER BY title', (err, res) => {
     if (err) throw err;
     const p = new Table();
     res.forEach(({title, salary}) => {
@@ -392,7 +390,7 @@ const viewRoles = () => {
 //Initiate updateEmployeeRole by query of employees
 const beginRoleUpdate = () => {
   
-  connection.query('SELECT * FROM employee', (err, res) => {
+  connection.query('SELECT * FROM employee ORDER BY last_name', (err, res) => {
     if (err) throw err;
     let nameArray = [];
     res.forEach(({employee_id, first_name, last_name, role_id}) => {
@@ -405,7 +403,7 @@ const beginRoleUpdate = () => {
 
 //Query roles for updateEmployeeRole function
 const queryRoles = (names) => {
-  connection.query('SELECT * FROM role', (err, res) => {
+  connection.query('SELECT * FROM role ORDER BY title', (err, res) => {
     if (err) throw err;
     let roleArray = [];
     res.forEach(({id, title}) => {
