@@ -1,6 +1,16 @@
+//Dependencies
 const mysql = require('mysql');
 const inquirer = require('inquirer');
 const { Table } = require('console-table-printer');
+const figlet = require('figlet');
+const chalk = require('chalk');
+
+const welcomeLogo = () => {
+  console.log(chalk.green(figlet.textSync('\nEmployee Managment System', { font: 'ANSI Shadow', horizontalLayout: 'full' })));
+  // console.log(`Employee Management System\n`);
+};
+
+welcomeLogo();
 
 //Establish connection to employee database
 const connection = mysql.createConnection({
@@ -20,9 +30,21 @@ const connection = mysql.createConnection({
 //Initiate connection to employee database
 connection.connect((err) => {
   if (err) throw err;
-  console.log(`connected as id ${connection.threadId}\n`);
   mainMenu();
 });
+
+//A function that will validate prompts needing a string
+const validateString = string => {
+  return string !== '' || 'This information is required.';
+};
+
+//A function that will validate prompts needing a number
+const validateNumber = number => {
+  const reg = /^\d+$/;
+  return reg.test(number) || "Please enter a number.";
+};
+
+//---------------------------------//
 
 //Begin main menu function
 const mainMenu = () => {
@@ -46,17 +68,10 @@ const mainMenu = () => {
   
           case 'View department, role, or employee':
             viewData();
-            console.log(answer.action);
             break;
   
           case 'Update employee role':
             beginRoleUpdate();
-            console.log(answer.action);
-            break;
-  
-          case 'View all employees':
-            // viewAllEmployees();
-            console.log(answer.action);
             break;
   
           case 'Exit':
@@ -72,7 +87,7 @@ const mainMenu = () => {
         
 };
 
-//--------------------------------//
+//---------------------------------//
 
 //Submenu to ask to add data by department, role, or employee
 const addData = () => {
@@ -126,7 +141,7 @@ const addDepartment = () => {
           type: 'input',
           name: 'dept',
           message: "Please input the department:",
-          // validate: validateString,
+          validate: validateString,
           },
           
       ])
@@ -161,14 +176,14 @@ const addRole = (dept) => {
           type: 'input',
           name: 'title',
           message: "Please input the title of this role:",
-          // validate: validateString,
+          validate: validateString,
           },
 
           {
             type: 'input',
             name: 'salary',
             message: "Please input the salary of this role:",
-            // validate: validateString,
+            validate: validateNumber,
           },
 
           {
@@ -176,7 +191,6 @@ const addRole = (dept) => {
             name: 'dept',
             message: "Please add a department for this role:",
             choices: [...dept],
-            // validate: validateString,
           },
           
       ])
@@ -207,6 +221,7 @@ const beginAddEmployee = () => {
     });
 };
 
+//Query managers for the addEmployee function
 const queryManagersForAddEmployee = roles => {
   connection.query('SELECT * FROM employee WHERE manager_id IS NULL', (err, res) => {
     if (err) throw err;
@@ -218,7 +233,6 @@ const queryManagersForAddEmployee = roles => {
   });
 }
 
-
 //Add employee who has a manager to database
 const addEmployee = (role, manager) => {
   inquirer
@@ -227,14 +241,14 @@ const addEmployee = (role, manager) => {
       type: 'input',
       name: 'fname',
       message: "Please enter the first name of the employee:",
-      // validate: validateString,
+      validate: validateString,
       },
 
       {
         type: 'input',
         name: 'lname',
         message: "Please enter the last name of the employee:",
-        // validate: validateString,
+        validate: validateString,
       },
 
       {
@@ -242,7 +256,7 @@ const addEmployee = (role, manager) => {
         name: 'role',
         message: "Please select a role for this employee:",
         choices: [...role],
-        // validate: validateString,
+      
       },
 
       {
@@ -250,7 +264,7 @@ const addEmployee = (role, manager) => {
         name: 'manager',
         message: "Please select a manager for this employee:",
         choices: [...manager, 'This employee is a manager'],
-        // validate: validateString,
+        
       },
       
   ])
@@ -273,7 +287,7 @@ const addEmployee = (role, manager) => {
   });
 };
 
-//Add employee who is a manger to database
+//Add employee who is already a manger to database
 const addManagerAsEmployee = managerData => {
   const roleSplit = managerData.role.split(' ');
   const roleKey = roleSplit[0];
@@ -285,7 +299,7 @@ const addManagerAsEmployee = managerData => {
 }) 
 };
 
-//----------------------------//
+//---------------------------------//
 
 //Submenu to view employee data
 const viewData = () => {
@@ -373,9 +387,9 @@ const viewRoles = () => {
   });
 }
 
-//------------------------------//
+//---------------------------------//
 
-//Initiate updateEmployee Role by query of employees
+//Initiate updateEmployeeRole by query of employees
 const beginRoleUpdate = () => {
   
   connection.query('SELECT * FROM employee', (err, res) => {
@@ -411,7 +425,7 @@ const updateEmployeeRole = (names, roles) => {
           name: 'name',
           message: "Please select a name:",
           choices: [...names],
-          // validate: validateString,
+          
           },
 
           {
@@ -419,12 +433,11 @@ const updateEmployeeRole = (names, roles) => {
             name: 'role',
             message: "Please select a role:",
             choices: [...roles],
-            // validate: validateString,
+            
             },
           
       ])
       .then((data) => {
-        console.log(data)
         const nameSplit = data.name.split(' ');
         const roleSplit = data.role.split(' ');;
         const employeeKey = nameSplit[2];
@@ -438,7 +451,3 @@ const updateEmployeeRole = (names, roles) => {
     });
 
 };
-
-
-
- 
